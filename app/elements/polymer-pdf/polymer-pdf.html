@@ -1,0 +1,123 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<script src="pdf.combined.js"></script>
+
+<dom-module id="polymer-pdf">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <input type="file" id="file" name="file"/>
+    <paper-button id="back_btn"
+                  raised
+                  disabled="{{_nextPageDisabled(currentPage, pdfLength)}}"
+                  on-tap="_nextPage">
+      &gt;
+    </paper-button>
+    <canvas id="viewer"></canvas>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'polymer-pdf',
+
+      properties: {
+        currentPage: {
+          type: Number,
+          value: 1
+        },
+        scale: {
+          type: Number,
+          value: 1.5
+        },
+        pdf: {
+          type: Object,
+          value: undefined
+        },
+        pdfLength: {
+          type: Number,
+          value: 0
+        }
+      },
+
+      listeners: {
+        'file.change': '_fileChanged'
+      },
+
+      ready: function() {
+      },
+
+      _fileChanged: function(e) {
+        var _this = this;
+        var file = e.target.files[0];
+        if (!file.type.match('application/pdf')) { return; }
+        var reader = new FileReader();
+        reader.onload = function(loadEvent) {
+          var fileArrayBuffer = loadEvent.target.result;
+          var uintArray = new Uint8Array(fileArrayBuffer);
+          _this.loadFile(uintArray);
+        };
+
+        reader.readAsArrayBuffer(file);
+      },
+
+      loadFile: function(file) {
+        var _this = this;
+        PDFJS.getDocument(file)
+          .then(function(pdf) {
+            _this.pdf = pdf;
+            _this.set('pdfLength', pdf.pdfInfo.numPages);
+            _this.setPage(_this.currentPage);
+          })
+          .catch(function(err) {
+            console.warn('[polymer-pdf] ', err);
+          });
+      },
+
+      setPage: function(page) {
+        var _this = this;
+        this.pdf.getPage(page)
+          .then(function(page) {
+            var scale = _this.scale;
+            var viewport = page.getViewport(scale);
+
+            var canvas = document.getElementById('viewer');
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var renderContext = {
+                canvasContext: context,
+                  viewport: viewport
+            };
+            page.render(renderContext);
+          })
+          .catch(function(err) {
+            console.warn('[polymer-pdf] ', err);
+          });
+      },
+
+      _nextPage: function() {
+        var nextPage = this.currentPage + 1;
+        this.setPage(nextPage);
+        this.set('currentPage', nextPage);
+      },
+
+      _previousPage: function() {
+        var previous = this.currentPage - 1;
+        this.setPage(previous);
+        this.set('currentPage', previous);
+      },
+
+      _nextPageDisabled: function(currentPage, pdfLength) {
+        // if (this.pdf === undefined) { return true; }
+        return (currentPage + 1) > pdfLength;
+      }
+    });
+  })();
+  </script>
+</dom-module>
