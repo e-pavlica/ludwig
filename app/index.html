@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tessiture</title>
+  <title>Tessitura</title>
 
   <!-- Chrome for Android theme color -->
   <meta name="theme-color" content="#2E3AA1">
@@ -51,7 +51,10 @@
       <paper-toolbar>
         <div>Tessitura</div>
       </paper-toolbar>
-      <polymer-pdf class="content"></polymer-pdf>
+      <iron-pages selected="0">
+        <tessitura-library></tessitura-library>
+        <tessitura-pdf class="content"></tessitura-pdf>
+      </iron-pages>
     </paper-header-panel>
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>

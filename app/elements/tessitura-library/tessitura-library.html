@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<!-- <link rel="import" href="../tessitura&#45;database/tessitura&#45;database.html"> -->
+
+<dom-module id="tessitura-library">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <span>{{greeting}}</span>
+
+    <iron-list items="[[files]]" as="file">
+      <template>
+        <div>File: [[file.title]]</div>
+      </template>
+    </iron-list>
+
+    <paper-fab icon="add"
+               on-tap="addFile">
+    </paper-fab>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    class TessituraLibrary {
+      get behaviors() {
+        return [];
+      }
+
+      beforeRegister() {
+        this.is = 'tessitura-library';
+        this.properties = {
+          files: {
+            type: Array,
+            value: () => { return []; }
+          },
+          greeting: {
+            type: String,
+            value: 'Hello!'
+          }
+        };
+      }
+
+      ready() {
+        // Get files from localforage
+      }
+
+      addFile() {
+
+      }
+    }
+
+    Polymer(TessituraLibrary);
+    // Polymer({
+    //   is: 'tessitura-library',
+    //
+    //   properties: {
+    //     files: {
+    //       type: Array,
+    //       value: () => { return []; }
+    //     }
+    //   },
+    //
+    //   ready: function() {
+    //
+    //   }
+    // });
+  })();
+  </script>
+</dom-module>

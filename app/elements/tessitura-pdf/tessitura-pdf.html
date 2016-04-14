@@ -2,7 +2,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <script src="pdf.combined.js"></script>
 
-<dom-module id="polymer-pdf">
+<dom-module id="tessitura-pdf">
   <template>
     <style>
       :host {
@@ -23,7 +23,7 @@
     'use strict';
 
     Polymer({
-      is: 'polymer-pdf',
+      is: 'tessitura-pdf',
 
       properties: {
         currentPage: {
@@ -74,7 +74,7 @@
             _this.setPage(_this.currentPage);
           })
           .catch(function(err) {
-            console.warn('[polymer-pdf] ', err);
+            console.warn('[tessitura-pdf] ', err);
           });
       },
 
@@ -97,7 +97,7 @@
             page.render(renderContext);
           })
           .catch(function(err) {
-            console.warn('[polymer-pdf] ', err);
+            console.warn('[tessitura-pdf] ', err);
           });
       },
 
@@ -114,7 +114,6 @@
       },
 
       _nextPageDisabled: function(currentPage, pdfLength) {
-        // if (this.pdf === undefined) { return true; }
         return (currentPage + 1) > pdfLength;
       }
     });
