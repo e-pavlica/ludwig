@@ -9,7 +9,6 @@
         display: block;
       }
     </style>
-    <input type="file" id="file" name="file"/>
     <paper-button id="back_btn"
                   raised
                   disabled="{{_nextPageDisabled(currentPage, pdfLength)}}"
@@ -44,26 +43,10 @@
         }
       },
 
-      listeners: {
-        'file.change': '_fileChanged'
-      },
 
       ready: function() {
       },
 
-      _fileChanged: function(e) {
-        var _this = this;
-        var file = e.target.files[0];
-        if (!file.type.match('application/pdf')) { return; }
-        var reader = new FileReader();
-        reader.onload = function(loadEvent) {
-          var fileArrayBuffer = loadEvent.target.result;
-          var uintArray = new Uint8Array(fileArrayBuffer);
-          _this.loadFile(uintArray);
-        };
-
-        reader.readAsArrayBuffer(file);
-      },
 
       loadFile: function(file) {
         var _this = this;

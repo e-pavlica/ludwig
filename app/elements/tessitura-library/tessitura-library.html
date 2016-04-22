@@ -2,7 +2,6 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-<!-- <link rel="import" href="../tessitura&#45;database/tessitura&#45;database.html"> -->
 
 <dom-module id="tessitura-library">
   <template>
@@ -10,23 +9,25 @@
       :host {
         display: block;
       }
+      #file {
+        position: absolute;
+        left: -999999px;
+        visibility: hidden;
+      }
     </style>
-    <span>{{greeting}}</span>
 
-    <iron-list items="[[files]]" as="file">
+    <iron-list items="[[titles]]" as="title">
       <template>
-        <div>File: [[file.title]]</div>
+        <div>File: [[title.name]]</div>
       </template>
     </iron-list>
 
+    <input type="file" id="file" name="file" accept="application/pdf"/>
     <paper-fab icon="add"
-               on-tap="addFile">
+               on-tap="_addFile">
     </paper-fab>
   </template>
   <script>
-  (function() {
-    'use strict';
-
     class TessituraLibrary {
       get behaviors() {
         return [];
@@ -34,42 +35,65 @@
 
       beforeRegister() {
         this.is = 'tessitura-library';
+
         this.properties = {
-          files: {
+          titles: {
             type: Array,
             value: () => { return []; }
-          },
-          greeting: {
-            type: String,
-            value: 'Hello!'
           }
+        };
+
+        this.listeners = {
+          'file.change': '_fileChanged'
         };
       }
 
       ready() {
-        // Get files from localforage
+
       }
 
-      addFile() {
+      listTitles() {
+        let _this = this;
+        let req = window.app.db.allTitles();
+        req.then((titles) => { _this.set('titles', titles); })
+          .catch((err) => { console.warn(err); });
+      }
 
+      _fileChanged(e) {
+        var _this = this;
+        var file = e.target.files[0];
+        if (!file.type.match('application/pdf')) { return; }
+        var reader = new FileReader();
+        reader.onload = function(loadEvent) {
+          var fileArrayBuffer = loadEvent.target.result;
+          var uintArray = new Uint8Array(fileArrayBuffer);
+          _this._saveFile(file, uintArray);
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
+
+      _addFile() {
+        this.$.file.click();
+      }
+
+      _saveFile(file, fileData) {
+        let promise = window.app.db.save('file', {
+          name: file.name,
+          importedAt: new Date(),
+          data: fileData
+        });
+
+        promise
+          .then((key) => {
+            console.log(`Saved with ${key}`);
+          })
+          .catch((err) => {
+            console.warn(`Unable to save file`);
+          });
       }
     }
 
     Polymer(TessituraLibrary);
-    // Polymer({
-    //   is: 'tessitura-library',
-    //
-    //   properties: {
-    //     files: {
-    //       type: Array,
-    //       value: () => { return []; }
-    //     }
-    //   },
-    //
-    //   ready: function() {
-    //
-    //   }
-    // });
-  })();
   </script>
 </dom-module>
