@@ -1,13 +1,23 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="tessitura-library">
   <template>
     <style>
       :host {
         display: block;
+      }
+      #add_btn {
+        position: fixed;
+        bottom: 50px;
+        right: 50px;
       }
       #file {
         position: absolute;
@@ -16,16 +26,47 @@
       }
     </style>
 
-    <iron-list items="[[titles]]" as="title">
+    <iron-list items="[[titles]]" as="t" role="listbox">
       <template>
-        <div>File: [[title.name]]</div>
+        <paper-item on-tap="_openTitle">
+          <paper-item-body two-line>
+            <div>[[t.name]]</div>
+            <div secondary>[[t.composer]]</div>
+          </paper-item-body>
+        </paper-item>
       </template>
     </iron-list>
 
+    <!-- Input for File Reader -->
     <input type="file" id="file" name="file" accept="application/pdf"/>
+
+    <!-- New File Button -->
     <paper-fab icon="add"
+               id="add_btn"
                on-tap="_addFile">
     </paper-fab>
+
+    <!-- Dialog to enter Title info when importing file -->
+    <paper-dialog id="title_dialog" modal>
+      <h2>Title Information</h2>
+      <paper-dialog-scrollable>
+        <paper-input label="Name" value="{{title.name}}"></paper-input>
+        <paper-input label="Composer" value="{{title.composer}}"></paper-input>
+        <paper-input label="Arranger" value="{{title.arranger}}"></paper-input>
+        <paper-input label="Key" value="{{title.key}}"></paper-input>
+        <paper-textarea label="Notes" value="{{title.key}}"></paper-textarea>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss
+                      on-tap="_destroyFile">
+          Cancel
+        </paper-button>
+        <paper-button dialog-confirm
+                      on-tap="_saveTitle">
+          Save
+        </paper-button>
+      </div>
+    </paper-dialog>
   </template>
   <script>
     class TessituraLibrary {
@@ -40,16 +81,18 @@
           titles: {
             type: Array,
             value: () => { return []; }
+          },
+          title: {
+            type: Object,
+            value: () => {
+              return new Title();
+            }
           }
         };
 
         this.listeners = {
           'file.change': '_fileChanged'
         };
-      }
-
-      ready() {
-
       }
 
       listTitles() {
@@ -59,22 +102,36 @@
           .catch((err) => { console.warn(err); });
       }
 
+      _addFile() {
+        this.$.file.click();
+      }
+
       _fileChanged(e) {
-        var _this = this;
-        var file = e.target.files[0];
+        // let _this = this;
+        let file = e.target.files[0];
         if (!file.type.match('application/pdf')) { return; }
-        var reader = new FileReader();
-        reader.onload = function(loadEvent) {
-          var fileArrayBuffer = loadEvent.target.result;
-          var uintArray = new Uint8Array(fileArrayBuffer);
-          _this._saveFile(file, uintArray);
+        let reader = new FileReader();
+        reader.onload = (loadEvent) => {
+          let fileArrayBuffer = loadEvent.target.result;
+          let uintArray = new Uint8Array(fileArrayBuffer);
+          this._saveFile(file, uintArray);
         };
 
         reader.readAsArrayBuffer(file);
       }
 
-      _addFile() {
-        this.$.file.click();
+      _openTitle(e) {
+        let titleIdx = e.model.index;
+        let fileID = this.titles[titleIdx].fileID;
+        let promise = window.app.db.retrieve('file', fileID);
+        promise
+          .then((file) => {
+            window.app.$.pdf.loadFile(file.data);
+            window.app.$.pages.select(1);
+          })
+          .catch((err) => {
+            console.warn(`[TessituraLibrary] Failed to retrieve file ${fileID}`);
+          });
       }
 
       _saveFile(file, fileData) {
@@ -86,10 +143,25 @@
 
         promise
           .then((key) => {
-            console.log(`Saved with ${key}`);
+            console.log(`[TessituraLibrary] Saved ${file.name} to ${key}`);
+            this.set('title.name', file.name.replace(/\.pdf/i, ''));
+            this.set('title.fileID', key);
+            this.$.title_dialog.open();
           })
           .catch((err) => {
-            console.warn(`Unable to save file`);
+            console.warn(`[TessituraLibrary] Unable to save file ${file.name}`);
+          });
+      }
+
+      _saveTitle() {
+        let promise = window.app.db.save('title', this.title);
+        promise
+          .then(() => {
+            console.log(`[TessituraLibrary] Saved ${this.title.name}`);
+            this.listTitles();
+          })
+          .catch((err) => {
+            console.warn(`[TessituraLibrary] Error saving ${this.title.name}: ${err}`);
           });
       }
     }
