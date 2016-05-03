@@ -85,7 +85,7 @@
           title: {
             type: Object,
             value: () => {
-              return new Title();
+              return new Tessitura.Title();
             }
           }
         };
@@ -127,7 +127,7 @@
         promise
           .then((file) => {
             window.app.$.pdf.loadFile(file.data);
-            window.app.$.pages.select(1);
+            window.app.$.pages.select('pdf');
           })
           .catch((err) => {
             console.warn(`[TessituraLibrary] Failed to retrieve file ${fileID}`);

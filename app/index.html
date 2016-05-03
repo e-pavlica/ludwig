@@ -47,15 +47,10 @@
 </head>
 <body unresolved>
   <template is="dom-bind" id="app">
-    <paper-header-panel>
-      <paper-toolbar>
-        <div>Tessitura</div>
-      </paper-toolbar>
-      <iron-pages selected="0" id="pages">
-        <tessitura-library id="library" class="content"></tessitura-library>
-        <tessitura-pdf id="pdf" class="content"></tessitura-pdf>
-      </iron-pages>
-    </paper-header-panel>
+    <iron-pages attr-for-selected="id" selected="library" id="pages">
+      <tessitura-library id="library"></tessitura-library>
+      <tessitura-pdf id="pdf"></tessitura-pdf>
+    </iron-pages>
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
     </paper-toast>

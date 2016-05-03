@@ -1,13 +1,3 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 
@@ -56,156 +46,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     @apply(--layout-vertical);
   }
 
-  .space {
-    @apply(--layout-flex);
-  }
-
-  #drawerToolbar {
-    color: var(--secondary-text-color);
-    background-color: var(--drawer-menu-color);
-    border-bottom: var(--drawer-toolbar-border-color);
-  }
-
-  #drawerToolbar .menu-name {
-    @apply(--paper-font-title);
-  }
-
-  paper-scroll-header-panel {
-    height: 100%;
-  }
-
-  paper-menu {
-    --paper-menu-selected-item: {
-      color: var(--primary-color);
-    }
-
-    --paper-menu-focused-item-after: {
-      background: var(--primary-color);
-    }
-  }
-
-  paper-menu iron-icon {
-    margin-right: 33px;
-    opacity: 0.54;
-  }
-
-  paper-menu a {
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-
-    text-decoration: none;
-    color: var(--menu-link-color);
-    font-family: 'Roboto', 'Noto', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
-    min-height: 48px;
-    padding: 0 16px;
-  }
-
-  #mainToolbar.tall .app-name {
-    font-size: 40px;
-    font-weight: 300;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  #mainToolbar .middle-container,
-  #mainToolbar .bottom-container {
-    @apply(--layout-horizontal);
-    @apply(--layout-center);
-  }
-
-  #mainToolbar .middle-container  {
-    height: 100%;
-    margin-left: 48px;
-  }
-
-  #mainToolbar:not(.tall) .middle-container {
-    font-size: 18px;
-    padding-bottom: 0;
-  }
-
-  #mainToolbar .bottom-container {
-    @apply(--paper-font-subhead);
-
-    margin-left: 48px;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  /* Height of the scroll area */
-  .content {
-    height: 900px;
-  }
-
-  section[data-route="home"] paper-material {
-    @apply(--paper-font-body2);
-  }
-
-  section[data-route="home"] paper-material .subhead {
-    @apply(--paper-font-subhead);
-  }
-
-  paper-material {
-    border-radius: 2px;
-    height: 100%;
-    padding: 16px 0 16px 0;
-    width: calc(98.66% - 16px);
-    margin: 16px auto;
-    background: white;
-  }
-
-  #toast .toast-hide-button {
-    color: #eeff41;
-    margin: 10px;
-  }
-
   /* Breakpoints */
 
   /* Small */
   @media (max-width: 600px) {
-
-    #drawer .paper-toolbar {
-      margin-left: 16px;
-    }
-
-    #mainToolbar.tall .app-name {
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    paper-material {
-      --menu-container-display: none;
-      width: calc(97.33% - 32px);
-      padding-left: 16px;
-      padding-right: 16px;
-    }
-
   }
 
   /* Tablet+ */
   @media (min-width: 601px) {
-
-    #drawer.paper-drawer-panel > [drawer] {
-      border-right: 1px solid rgba(0, 0, 0, 0.14);
-    }
-
-    iron-pages {
-      padding: 48px 62px;
-    }
-
-    paper-material {
-      width: calc(98% - 46px);
-      margin-bottom: 32px;
-      padding-left: 30px;
-      padding-right: 30px;
-    }
-
   }
 
   /* Material Design Adaptive Breakpoints */

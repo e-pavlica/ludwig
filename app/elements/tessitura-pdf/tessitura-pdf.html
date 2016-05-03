@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <script src="pdf.combined.js"></script>
+<script src="pdf-touch-behavior.js"></script>
 
 <dom-module id="tessitura-pdf">
   <template>
@@ -8,13 +9,16 @@
       :host {
         display: block;
       }
+      #viewer {
+        width: 100%;
+      }
     </style>
-    <paper-button id="back_btn"
-                  raised
-                  disabled="{{_nextPageDisabled(currentPage, pdfLength)}}"
-                  on-tap="_nextPage">
-      &gt;
-    </paper-button>
+    <!-- <paper&#45;button id="back_btn" -->
+    <!--               raised -->
+    <!--               disabled="{{_nextPageDisabled(currentPage, pdfLength)}}" -->
+    <!--               on&#45;tap="_nextPage"> -->
+    <!--   &#38;gt; -->
+    <!-- </paper&#45;button> -->
     <canvas id="viewer"></canvas>
   </template>
   <script>
@@ -23,6 +27,8 @@
 
     Polymer({
       is: 'tessitura-pdf',
+
+      behaviors: [Tessitura.PDFTouchBehavior],
 
       properties: {
         currentPage: {
@@ -86,12 +92,14 @@
 
       _nextPage: function() {
         var nextPage = this.currentPage + 1;
+        if (nextPage > this.pdfLength) return;
         this.setPage(nextPage);
         this.set('currentPage', nextPage);
       },
 
       _previousPage: function() {
         var previous = this.currentPage - 1;
+        if (previous < 0) return;
         this.setPage(previous);
         this.set('currentPage', previous);
       },
