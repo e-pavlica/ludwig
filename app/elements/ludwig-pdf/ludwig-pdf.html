@@ -3,7 +3,7 @@
 <script src="pdf.combined.js"></script>
 <script src="pdf-touch-behavior.js"></script>
 
-<dom-module id="tessitura-pdf">
+<dom-module id="ludwig-pdf">
   <template>
     <style>
       :host {
@@ -26,9 +26,9 @@
     'use strict';
 
     Polymer({
-      is: 'tessitura-pdf',
+      is: 'ludwig-pdf',
 
-      behaviors: [Tessitura.PDFTouchBehavior],
+      behaviors: [Ludwig.PDFTouchBehavior],
 
       properties: {
         currentPage: {
@@ -63,7 +63,7 @@
             _this.setPage(_this.currentPage);
           })
           .catch(function(err) {
-            console.warn('[tessitura-pdf] ', err);
+            console.warn('[ludwig-pdf] ', err);
           });
       },
 
@@ -86,7 +86,7 @@
             page.render(renderContext);
           })
           .catch(function(err) {
-            console.warn('[tessitura-pdf] ', err);
+            console.warn('[ludwig-pdf] ', err);
           });
       },
 

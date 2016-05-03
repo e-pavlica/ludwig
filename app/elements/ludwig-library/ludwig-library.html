@@ -8,7 +8,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
-<dom-module id="tessitura-library">
+<dom-module id="ludwig-library">
   <template>
     <style>
       :host {
@@ -69,13 +69,13 @@
     </paper-dialog>
   </template>
   <script>
-    class TessituraLibrary {
+    class LudwigLibrary {
       get behaviors() {
         return [];
       }
 
       beforeRegister() {
-        this.is = 'tessitura-library';
+        this.is = 'ludwig-library';
 
         this.properties = {
           titles: {
@@ -85,7 +85,7 @@
           title: {
             type: Object,
             value: () => {
-              return new Tessitura.Title();
+              return new Ludwig.Title();
             }
           }
         };
@@ -130,7 +130,7 @@
             window.app.$.pages.select('pdf');
           })
           .catch((err) => {
-            console.warn(`[TessituraLibrary] Failed to retrieve file ${fileID}`);
+            console.warn(`[LudwigLibrary] Failed to retrieve file ${fileID}`);
           });
       }
 
@@ -143,13 +143,13 @@
 
         promise
           .then((key) => {
-            console.log(`[TessituraLibrary] Saved ${file.name} to ${key}`);
+            console.log(`[LudwigLibrary] Saved ${file.name} to ${key}`);
             this.set('title.name', file.name.replace(/\.pdf/i, ''));
             this.set('title.fileID', key);
             this.$.title_dialog.open();
           })
           .catch((err) => {
-            console.warn(`[TessituraLibrary] Unable to save file ${file.name}`);
+            console.warn(`[LudwigLibrary] Unable to save file ${file.name}`);
           });
       }
 
@@ -157,15 +157,15 @@
         let promise = window.app.db.save('title', this.title);
         promise
           .then(() => {
-            console.log(`[TessituraLibrary] Saved ${this.title.name}`);
+            console.log(`[LudwigLibrary] Saved ${this.title.name}`);
             this.listTitles();
           })
           .catch((err) => {
-            console.warn(`[TessituraLibrary] Error saving ${this.title.name}: ${err}`);
+            console.warn(`[LudwigLibrary] Error saving ${this.title.name}: ${err}`);
           });
       }
     }
 
-    Polymer(TessituraLibrary);
+    Polymer(LudwigLibrary);
   </script>
 </dom-module>

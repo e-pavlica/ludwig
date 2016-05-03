@@ -1,6 +1,6 @@
-if (!window.Tessitura) window.Tessitura = {};
+if (!window.Ludwig) window.Ludwig = {};
 
-Tessitura.PDFTouchBehavior = {
+Ludwig.PDFTouchBehavior = {
     properties: {
         /**
          * Percent of page that represents the Next/Last page tap areas,

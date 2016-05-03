@@ -1,14 +1,14 @@
 (function() {
     'use strict';
-    if (!window.Tessitura) window.Tessitura = {};
+    if (!window.Ludwig) window.Ludwig = {};
 
-    Tessitura.Item = class Item {
+    Ludwig.Item = class Item {
         constructor(type) {
             this._type = type;
         }
     };
 
-    Tessitura.Title = class Title extends Tessitura.Item {
+    Ludwig.Title = class Title extends Ludwig.Item {
         constructor(name, composer, arranger, key, notes, fileID) {
             super('title');
             this.name = name;

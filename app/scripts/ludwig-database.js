@@ -1,9 +1,9 @@
-class TessituraDatabase {
+class LudwigDatabase {
     /**
      * Initial Configuration
      */
     constructor() {
-        this.DB_NAME = 'tessitura-app';
+        this.DB_NAME = 'ludwig-app';
         this.DB_VERSION = 1;
         this.FILE_STORE_NAME = 'files';
         this.PREFERENCE_STORE_NAME = 'prefs';
@@ -24,7 +24,7 @@ class TessituraDatabase {
 
         // Failed to Open IndexedDB
         request.onerror = (e) => {
-            console.warn(`[TessituraDatabase] Error accessing DB: ${e.target.errorCode}`);
+            console.warn(`[LudwigDatabase] Error accessing DB: ${e.target.errorCode}`);
         };
 
         // Set Up the DB
@@ -37,7 +37,7 @@ class TessituraDatabase {
     }
 
     /**
-     * Get all Tessitura titles from IndexedDB
+     * Get all Ludwig titles from IndexedDB
      * @returns {Promise} resolves with Array of titles
      */
     allTitles() {
@@ -56,7 +56,7 @@ class TessituraDatabase {
             };
 
             cursor.onerror = (e) => {
-                console.warn(`[TessituraDatabase] Failed to get titles: ${e.target.errorCode}`);
+                console.warn(`[LudwigDatabase] Failed to get titles: ${e.target.errorCode}`);
                 reject(e.target.errorCode);
             };
         });
@@ -74,12 +74,12 @@ class TessituraDatabase {
         return new Promise(function(resolve, reject) {
             let request = _this._objectStore(store, 'readonly').delete(key);
             request.onsuccess = (e) => {
-                console.log(`[TessituraDatabase] Deleted ${type} ${key}`);
+                console.log(`[LudwigDatabase] Deleted ${type} ${key}`);
                 resolve(request.result);
             };
 
             request.onerror = (e) => {
-                console.warn(`[TessituraDatabase] Failed to delete ${type} ${key}`);
+                console.warn(`[LudwigDatabase] Failed to delete ${type} ${key}`);
                 reject(new Error(e.target.errorCode));
             };
         });
@@ -97,12 +97,12 @@ class TessituraDatabase {
         return new Promise(function(resolve, reject) {
             let request = _this._objectStore(store, 'readonly').get(key);
             request.onsuccess = (e) => {
-                console.log(`[TessituraDatabase] Updated ${type} ${key}`);
+                console.log(`[LudwigDatabase] Updated ${type} ${key}`);
                 resolve(request.result);
             };
 
             request.onerror = (e) => {
-                console.warn(`[TessituraDatabase] Failed to update ${type} ${key}`);
+                console.warn(`[LudwigDatabase] Failed to update ${type} ${key}`);
                 reject(new Error(e.target.errorCode));
             };
         });
@@ -121,12 +121,12 @@ class TessituraDatabase {
         return new Promise(function(resolve, reject) {
             let request = _this._objectStore(store, 'readwrite').add(record);
             request.onsuccess = (e) => {
-                console.log(`[TessituraDatabase] Saved ${type}`);
+                console.log(`[LudwigDatabase] Saved ${type}`);
                 resolve(e.target.result);
             };
 
             request.onerror = (e) => {
-                console.warn(`[TessituraDatabase] Failed to save ${type}: ${e}`);
+                console.warn(`[LudwigDatabase] Failed to save ${type}: ${e}`);
                 reject(new Error(e.target.errorCode));
             };
         });
@@ -146,12 +146,12 @@ class TessituraDatabase {
         return new Promise(function(resolve, reject) {
             let request = _this._objectStore(store, 'readwrite').put(record, key);
             request.onsuccess = (e) => {
-                console.log(`[TessituraDatabase] Saved ${type}`);
+                console.log(`[LudwigDatabase] Saved ${type}`);
                 resolve(e.target.result);
             };
 
             request.onerror = (e) => {
-                console.warn(`[TessituraDatabase] Failed to save ${type}: ${e}`);
+                console.warn(`[LudwigDatabase] Failed to save ${type}: ${e}`);
                 reject(new Error(e.target.errorCode));
             };
         });
@@ -169,7 +169,7 @@ class TessituraDatabase {
     /**
      * Set up the IndexedDB Database.
      * Database Schema:
-     *   tessitura-app:
+     *   ludwig-app:
      *     files  (objectStore) - Objects representing PDF files
      *     titles (objectStore) - Objects representing a sheet music file's meta-data
      *     prefs  (objectStore) - Objects related to the application configuration
@@ -191,7 +191,7 @@ class TessituraDatabase {
         return new Promise((resolve, reject) => {
             let handleEvents = function(objectStore, type) {
                 objectStore.onsuccess = () => {
-                    console.info(`[TessituraDatabase] Initialized ${type} objectStore`);
+                    console.info(`[LudwigDatabase] Initialized ${type} objectStore`);
                     completed[type] = true;
                     if (done()) { resolve(); }
                 };

@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tessitura</title>
+  <title>Ludwig</title>
 
   <!-- Chrome for Android theme color -->
   <meta name="theme-color" content="#2E3AA1">
@@ -48,8 +48,8 @@
 <body unresolved>
   <template is="dom-bind" id="app">
     <iron-pages attr-for-selected="id" selected="library" id="pages">
-      <tessitura-library id="library"></tessitura-library>
-      <tessitura-pdf id="pdf"></tessitura-pdf>
+      <ludwig-library id="library"></ludwig-library>
+      <ludwig-pdf id="pdf"></ludwig-pdf>
     </iron-pages>
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
@@ -57,8 +57,8 @@
   </template>
 
   <!-- build:js scripts/app.js -->
-  <script src="scripts/tessitura-classes.js"></script>
-  <script src="scripts/tessitura-database.js"></script>
+  <script src="scripts/ludwig-classes.js"></script>
+  <script src="scripts/ludwig-database.js"></script>
   <script src="scripts/app.js"></script>
   <!-- endbuild-->
 </body>

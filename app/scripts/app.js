@@ -22,7 +22,7 @@
     window.addEventListener('WebComponentsReady', function() {
         // imports are loaded and elements have been registered
         // Init the Database
-        db = new TessituraDatabase();
+        db = new LudwigDatabase();
     });
 
     // Database loaded.
