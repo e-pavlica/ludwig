@@ -33,7 +33,7 @@ Ludwig.PDFTouchBehavior = {
 
         // Center Page Tap
         } else {
-            console.log('Center tap');
+            this._toggleUiComponents();
         }
     },
 
@@ -44,8 +44,8 @@ Ludwig.PDFTouchBehavior = {
      * @returns {Object} position relative to top, bottom, left, right
      */
     _relativeTapPosition: function(x, y) {
-        let width = this.clientHeight;
-        let height = this.clientWidth;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
         let right = 1 - (x / width);
         let left = x / width;
         let top = y / height;

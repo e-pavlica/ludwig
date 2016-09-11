@@ -1,36 +1,59 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import"
+      href="../ludwig-annotation-overlay/ludwig-annotation-overlay.html">
 <script src="pdf.combined.js"></script>
 <script src="pdf-touch-behavior.js"></script>
 
 <dom-module id="ludwig-pdf">
   <template>
+    <style is="custom-style" include="shared-styles"></style>
     <style>
       :host {
         display: block;
+        position: relative;
       }
       #viewer {
         width: 100%;
       }
+
+      paper-toolbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 30;
+      }
     </style>
-    <!-- <paper&#45;button id="back_btn" -->
-    <!--               raised -->
-    <!--               disabled="{{_nextPageDisabled(currentPage, pdfLength)}}" -->
-    <!--               on&#45;tap="_nextPage"> -->
-    <!--   &#38;gt; -->
-    <!-- </paper&#45;button> -->
+    <!-- Toolbar (Overlay) -->
+    <paper-toolbar hidden="[[uiHidden]]">
+      <paper-icon-button icon="menu"></paper-icon-button>
+    </paper-toolbar>
+
+    <!-- Annotations Overlay -->
+    <ludwig-annotation-overlay></ludwig-annotation-overlay>
+
+    <!-- PDF Viewer -->
     <canvas id="viewer"></canvas>
+
+    <paper-fab id="edit_annotations"
+               class="ludwig-fab"
+               icon="edit"
+               hidden="[[uiHidden]]"
+               on-tap="">
+    </paper-fab>
   </template>
   <script>
-  (function() {
-    'use strict';
+  class LudwigPDF {
+    get behaviors() {
+      return [Ludwig.PDFTouchBehavior];
+    }
 
-    Polymer({
-      is: 'ludwig-pdf',
-
-      behaviors: [Ludwig.PDFTouchBehavior],
-
-      properties: {
+    beforeRegister() {
+      this.properties = {
         currentPage: {
           type: Number,
           value: 1
@@ -46,68 +69,81 @@
         pdfLength: {
           type: Number,
           value: 0
+        },
+        uiHidden: {
+          type: Boolean,
+          value: true
+        },
+        inverted: {
+          type: Boolean,
+          value: false
         }
-      },
+      };
 
+      this.ready = function() {};
+    }
 
-      ready: function() {
-      },
+    loadFile(file) {
+      let _this = this;
+      PDFJS.getDocument(file)
+        .then(function(pdf) {
+          _this.pdf = pdf;
+          _this.set('pdfLength', pdf.pdfInfo.numPages);
+          _this.setPage(_this.currentPage);
+        })
+      .catch(function(err) {
+        console.warn('[ludwig-pdf] ', err);
+      });
+    }
 
+    setPage(page) {
+      let _this = this;
+      let canvas = document.getElementById('viewer');
+      let context = canvas.getContext('2d');
+      this.pdf.getPage(page)
+        .then(function(page) {
+          let scale = _this.scale;
+          let viewport = page.getViewport(scale);
 
-      loadFile: function(file) {
-        var _this = this;
-        PDFJS.getDocument(file)
-          .then(function(pdf) {
-            _this.pdf = pdf;
-            _this.set('pdfLength', pdf.pdfInfo.numPages);
-            _this.setPage(_this.currentPage);
-          })
-          .catch(function(err) {
-            console.warn('[ludwig-pdf] ', err);
-          });
-      },
+          let canvas = document.getElementById('viewer');
+          let context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
 
-      setPage: function(page) {
-        var _this = this;
-        this.pdf.getPage(page)
-          .then(function(page) {
-            var scale = _this.scale;
-            var viewport = page.getViewport(scale);
+          let renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          page.render(renderContext);
+        })
+      .catch(function(err) {
+        console.warn('[ludwig-pdf] ', err);
+      });
+    }
 
-            var canvas = document.getElementById('viewer');
-            var context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+    _nextPage() {
+      let nextPage = this.currentPage + 1;
+      if (nextPage > this.pdfLength) return;
+      this.setPage(nextPage);
+      this.set('currentPage', nextPage);
+    }
 
-            var renderContext = {
-                canvasContext: context,
-                  viewport: viewport
-            };
-            page.render(renderContext);
-          })
-          .catch(function(err) {
-            console.warn('[ludwig-pdf] ', err);
-          });
-      },
+    _previousPage() {
+      let previous = this.currentPage - 1;
+      if (previous < 0) return;
+      this.setPage(previous);
+      this.set('currentPage', previous);
+    }
 
-      _nextPage: function() {
-        var nextPage = this.currentPage + 1;
-        if (nextPage > this.pdfLength) return;
-        this.setPage(nextPage);
-        this.set('currentPage', nextPage);
-      },
+    _nextPageDisabled(currentPage, pdfLength) {
+      return (currentPage + 1) > pdfLength;
+    }
 
-      _previousPage: function() {
-        var previous = this.currentPage - 1;
-        if (previous < 0) return;
-        this.setPage(previous);
-        this.set('currentPage', previous);
-      },
+    _toggleUiComponents() {
+      this.uiHidden = !this.uiHidden;
+    }
+  }
 
-      _nextPageDisabled: function(currentPage, pdfLength) {
-        return (currentPage + 1) > pdfLength;
-      }
-    });
-  })();
+  Polymer(LudwigPDF);
   </script>
 </dom-module>

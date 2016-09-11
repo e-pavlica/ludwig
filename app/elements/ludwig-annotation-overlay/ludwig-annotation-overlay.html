@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="ludwig-annotation-overlay">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+      }
+      #overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+    <div>Hello from <span>{{foo}}</span></div>
+    <canvas id="overlay"></canvas>
+  </template>
+  <script>
+  class LudwigAnnotationOverlay {
+    get behaviors() {
+      return [];
+    }
+
+    beforeRegister() {
+      this.is = 'ludwig-annotation-overlay';
+
+      this.properties = {
+        foo: {
+          type: String,
+          value: 'ludwig-annotation-overlay',
+          notify: true
+        }
+      };
+    }
+  }
+
+  Polymer(LudwigAnnotationOverlay);
+  </script>
+</dom-module>

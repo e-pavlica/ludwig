@@ -10,14 +10,10 @@
 
 <dom-module id="ludwig-library">
   <template>
+    <style is="custom-style" include="shared-styles"></style>
     <style>
       :host {
         display: block;
-      }
-      #add_btn {
-        position: fixed;
-        bottom: 50px;
-        right: 50px;
       }
       #file {
         position: absolute;
@@ -42,6 +38,7 @@
 
     <!-- New File Button -->
     <paper-fab icon="add"
+               class="ludwig-fab"
                id="add_btn"
                on-tap="_addFile">
     </paper-fab>
